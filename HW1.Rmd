@@ -4,17 +4,20 @@ Reproducible Research: HW1
 ### Loading and preprocessing the data
 
 ```{r}
+echo = TRUE
 obj_csv <- read.csv("activity.csv")
 obj_csv$date <- as.Date(obj_csv$date, format="%Y-%m-%d")
 obj_clean <- na.omit(obj_csv)
 ```
 
 ### What is mean total number of steps taken per day?
+(For this part of the assignment, you can ignore the missing values in the dataset.)
+1. Make a histogram of the total number of steps taken each day
 
 ```{r}
 qplot(date, steps, data = obj_clean, stat="identity", geom = "histogram", width = 0.5)
 ```
-
+2. Calculate and report the mean and median total number of steps taken per day
 ```{r}
 agr_steps <- aggregate(obj_clean$steps, list(Date = obj_clean$date), FUN = "sum")$x
 mean(agr_steps)
@@ -23,17 +26,32 @@ median(agr_steps)
 
 ### What is the average daily activity pattern?
 
+1. Make a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, 
+   averaged across all days (y-axis)
+
 ```{r}
 avg <- aggregate(obj_clean$steps, list(interval = as.numeric(as.character(obj_clean$interval))), FUN = "mean")
 qplot(interval, x, data = avg, stat="identity", geom = "line")
 ```
-
+2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 ```{r}
 avg[avg$x == max(avg$x),]
 ```
 
 ### Imputing missing values
+Note that there are a number of days/intervals where there are missing values (coded as NA). 
+The presence of missing days may introduce bias into some calculations or summaries of the data.
 
+1. Calculate and report the total number of missing values in the dataset 
+   (i.e. the total number of rows with NAs)
+```{r}
+sum(is.na(obj_csv))
+```
+2. Devise a strategy for filling in all of the missing values in the dataset. 
+   The strategy does not need to be sophisticated. 
+   For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+
+Here, we are going to use the "mean for the 5-minute interval" to fill the missing part!
 ```{r}
 obj_csv2 <- obj_csv
 for(i in 1:nrow(obj_csv2)){
@@ -42,17 +60,28 @@ for(i in 1:nrow(obj_csv2)){
 	}
 }
 ```
+Checking there are no more missing values
 
 ```{r}
 sum(is.na(obj_csv2))
+```
+3. Make a histogram of the total number of steps taken each day 
+   and Calculate and report the mean and median total number of steps taken per day.
+
+```{r}
 qplot(date, steps, data = obj_csv2, stat="identity", geom = "histogram")
 ```
-
+4. Do these values differ from the estimates from the first part of the assignment? 
+   What is the impact of imputing missing data on the estimates of the total daily number of steps?
 ```{r}
 agr_steps2 <- aggregate(obj_csv2$steps, list(Date = obj_csv2$date), FUN = "sum")$x
 mean(agr_steps2)
 median(agr_steps2)
 ```
+
+To make sure if there is anything changed.
+From the information bellow, we know that the means are still the same,
+but the median becomes bigger!
 
 ```{r}
 mean(agr_steps2) == mean(agr_steps)
@@ -65,6 +94,9 @@ median(agr_steps2) - median(agr_steps)
 ```
 
 ### Are there differences in activity patterns between weekdays and weekends?
+1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” 
+   indicating whether a given date is a weekday or weekend day.
+   (We have no choice but use a little bit Chinese here, since it is a RStudio of Chinese version...)
 
 ```{r}
 obj_csv2$weekdays <- factor(format(obj_csv2$date, "%A"))
@@ -73,6 +105,8 @@ levels(obj_csv2$weekdays) <- list(weekday = c("周一", "周二", "周三", "周
                                    weekend = c("周六", "周日"))
 avg2 <- aggregate(obj_csv2$steps, list(interval = as.numeric(as.character(obj_csv2$interval)), weekdays = obj_csv2$weekdays), FUN = "mean")
 ```
+2. Make a panel plot containing a time series plot of the 5-minute interval (x-axis) 
+   and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
 ```{r}
 library(lattice)
