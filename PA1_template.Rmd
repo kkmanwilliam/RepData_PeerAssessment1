@@ -35,6 +35,8 @@ median(agr_steps)
 avg <- aggregate(obj_clean$steps, list(interval = as.numeric(as.character(obj_clean$interval))), FUN = "mean")
 qplot(interval, x, data = avg, stat="identity", geom = "line", xlab = "average steps")
 ```
+![Sample panel plot](figure/unnamed-chunk-2-1.png) 
+
 * Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
 ```{r}
