@@ -18,6 +18,9 @@ obj_clean <- na.omit(obj_csv)
 ```{r}
 qplot(date, steps, data = obj_clean, stat="identity", geom = "histogram", width = 0.5)
 ```
+
+![Sample panel plot](figure/unnamed-chunk-2-1.png) 
+
 * Calculate and report the mean and median total number of steps taken per day
 
 ```{r}
@@ -35,7 +38,7 @@ median(agr_steps)
 avg <- aggregate(obj_clean$steps, list(interval = as.numeric(as.character(obj_clean$interval))), FUN = "mean")
 qplot(interval, x, data = avg, stat="identity", geom = "line", xlab = "average steps")
 ```
-![Sample panel plot](figure/unnamed-chunk-2-1.png) 
+![Sample panel plot](figure/unnamed-chunk-4-1.png) 
 
 * Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
@@ -49,9 +52,11 @@ The presence of missing days may introduce bias into some calculations or summar
 
 * Calculate and report the total number of missing values in the dataset 
   (i.e. the total number of rows with NAs)
+  
 ```{r}
 sum(is.na(obj_csv))
 ```
+
 * Devise a strategy for filling in all of the missing values in the dataset. 
   The strategy does not need to be sophisticated. 
   For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
@@ -77,6 +82,7 @@ sum(is.na(obj_csv2))
 ```{r}
 qplot(date, steps, data = obj_csv2, stat="identity", geom = "histogram")
 ```
+![Sample panel plot](figure/unnamed-chunk-9-1.png) 
 
 * Do these values differ from the estimates from the first part of the assignment? 
   What is the impact of imputing missing data on the estimates of the total daily number of steps?
@@ -121,5 +127,5 @@ library(lattice)
 xyplot(avg2$x ~ avg2$interval | avg2$weekdays, layout = c(1, 2), type = "l", xlab = "Interval", ylab = "Steps")
 ```
 
-
+![Sample panel plot](figure/unnamed-chunk-15-1.png) 
 
